@@ -95,3 +95,13 @@ select {
     font-weight: bold;
     text-align: center;
 }
+.info-banner {
+  background: #e8f1ff;
+  color: #0b1f5e;
+  padding: 10px 12px;
+  margin: 10px auto 20px;
+  width: 90%;
+  border-left: 4px solid #0b1f5e;
+  font-size: 14px;
+  text-align: center;
+}
