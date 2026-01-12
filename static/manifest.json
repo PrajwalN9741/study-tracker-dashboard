@@ -1,0 +1,8 @@
+{
+  "name": "TCS Study Tracker",
+  "short_name": "TCS Tracker",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#0b1f5e",
+  "background_color": "#f4f8ff"
+}
