@@ -1,55 +1,53 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
 <title>Study Tracker</title>
+
 <link rel="stylesheet" href="static/style.css">
 <link rel="manifest" href="static/manifest.json">
+<link rel="icon" href="static/favicon.ico">
 <meta name="theme-color" content="#0b1f5e">
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
 
 <h2>📊 TCS 15-Day Study Tracker</h2>
+
 <div class="info-banner">
   🔔 <strong>Browser alerts only</strong> — no email notifications are used.
 </div>
 
 <div class="chart-container">
-    <canvas id="chart"></canvas>
-</div>
-<div id="alertBox" class="browser-alert" style="display:none;">
-    ⚠️ You have missed today’s study task!
+  <canvas id="chart"></canvas>
 </div>
 
-<form action="/reset-today" method="post" onsubmit="return confirmTodayReset();">
-    <button class="reset-today-btn">🔁 Reset Today</button>
-</form>
+<div id="alertBox" class="browser-alert" style="display:none;"></div>
 
-<form action="/reset" method="post" onsubmit="return confirmReset();">
-    <button class="reset-btn">🔄 Reset 15-Day Plan</button>
-</form>
-<form action="/reset-day" method="post" onsubmit="return confirmDayReset();">
-   <select id="daySelect" required></select>
+<div style="text-align:center;margin-bottom:12px;">
+  <button class="reset-today-btn" onclick="resetToday()">🔁 Reset Today</button>
+  <button class="reset-btn" onclick="resetAll()">🔄 Reset 15-Day Plan</button>
 
-    <button class="reset-day-btn">🔁 Reset Selected Day</button>
-</form>
-<form action="/undo-reset" method="post">
-    <button class="undo-btn">↩ Undo Last Reset</button>
-</form>
+  <select id="daySelect"></select>
+  <button class="reset-day-btn" onclick="resetSelected()">🔁 Reset Selected Day</button>
+
+  <button class="undo-btn" onclick="undoReset()">↩ Undo Last Reset</button>
+</div>
 
 <table>
-<tr>
-<th>Day</th><th>Task</th><th>Status</th><th>Action</th>
-</tr>
-
-<tbody id="taskTable"></tbody>
-
+  <thead>
+    <tr>
+      <th>Day</th><th>Task</th><th>Status</th><th>Action</th>
+    </tr>
+  </thead>
+  <tbody id="taskTable"></tbody>
 </table>
 
 <h3 id="weeklyProgress"></h3>
 
 <audio id="alertSound" src="static/alert.mp3"></audio>
-
 <script>
     function showBrowserAlert(message) {
     // On-screen alert
@@ -163,6 +161,7 @@ new Chart(ctx, {
 
 </body>
 </html>
+
 
 
 
