@@ -1,8 +1,22 @@
 {
   "name": "TCS Study Tracker",
-  "short_name": "TCS Tracker",
-  "start_url": "/",
+  "short_name": "Study Tracker",
+  "description": "15-Day TCS preparation study tracker with browser alerts",
+  "start_url": "/study-tracker-dashboard/",
+  "scope": "/study-tracker-dashboard/",
   "display": "standalone",
+  "background_color": "#ffffff",
   "theme_color": "#0b1f5e",
-  "background_color": "#f4f8ff"
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }
