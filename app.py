@@ -175,10 +175,6 @@ def undo_reset():
     con.commit()
     con.close()
     return redirect("/")
-@app.route("/test-alert")
-def test_alert():
-    send_alert("TEST ALERT – Email system working")
-    return "✅ Test alert sent. Check your email inbox."
 
 # ---------------- RUN ----------------
 if __name__ == "__main__":
