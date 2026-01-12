@@ -53,25 +53,27 @@
 <audio id="alertSound" src="static/alert.mp3"></audio>
 <script>
     function showBrowserAlert(message) {
-    // On-screen alert
-    const box = document.getElementById("alertBox");
-    box.innerText = message;
-    box.style.display = "block";
+  const box = document.getElementById("alertBox");
+  box.innerText = message;
+  box.style.display = "block";
 
-    // 🔊 Play sound
-    const sound = document.getElementById("alertSound");
-    sound.play().catch(() => {});
-
-    // 🔔 Browser notification
-    if ("Notification" in window) {
-        if (Notification.permission === "granted") {
-            navigator.serviceWorker.ready.then(reg => {
-    reg.showNotification("📘 TCS Study Alert", {
-        body: message,
-        icon: "static/icon-192.png",
-        badge: "static/icon-192.png"
+  // 🔔 Browser notification
+  if ("Notification" in window && Notification.permission === "granted") {
+    new Notification("📘 TCS Study Alert", {
+      body: message,
+      icon: "static/icon-192.png"
     });
-});
+  }
+
+  // 🔊 Play sound ONLY once per day
+  const todayKey = "alertPlayed-" + new Date().toDateString();
+
+  if (!localStorage.getItem(todayKey)) {
+    document.getElementById("alertSound").play().catch(()=>{});
+    localStorage.setItem(todayKey, "yes");
+  }
+}
+
         } else if (Notification.permission !== "denied") {
             Notification.requestPermission();
         }
@@ -164,6 +166,7 @@ new Chart(ctx, {
 
 </body>
 </html>
+
 
 
 
