@@ -68,8 +68,8 @@
             navigator.serviceWorker.ready.then(reg => {
     reg.showNotification("📘 TCS Study Alert", {
         body: message,
-        icon: "/static/icon-192.png",
-        badge: "/static/icon-192.png"
+        icon: "static/icon-192.png",
+        badge: "static/icon-192.png"
     });
 });
         } else if (Notification.permission !== "denied") {
@@ -78,7 +78,7 @@
     }
 }
 if ("serviceWorker" in navigator && "Notification" in window) {
-    navigator.serviceWorker.register("/static/sw.js").then(() => {
+    navigator.serviceWorker.register("static/sw.js").then(() => {
         Notification.requestPermission();
     });
 }
@@ -164,6 +164,7 @@ new Chart(ctx, {
 
 </body>
 </html>
+
 
 
 
