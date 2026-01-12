@@ -18,8 +18,8 @@
 
 <div class="info-banner">
   🔔 <strong>Browser alerts only</strong> — no email notifications are used.
-    <button onclick="enableNotifications()" class="reset-btn">
-  🔔 Enable Notifications
+    <button onclick="enablePush()" class="reset-btn">
+  🔔 Enable Push Notifications
 </button>
 </div>
 
@@ -52,6 +52,26 @@
 
 <audio id="alertSound" src="static/alert.mp3"></audio>
 <script>
+  function enablePush() {
+  Notification.requestPermission().then(permission => {
+    if (permission !== "granted") {
+      alert("Notification permission denied");
+      return;
+    }
+
+    const messaging = firebase.messaging();
+
+    messaging.getToken({
+      vapidKey: "BParGCjnABsB3lo5eqhOhm2vZqvFsFs8D8RCY-Mu3QSeAXEoWzhiROUa_ukBOv2oBfjrZBnw3tDcpj38dRijCNw"
+    }).then(token => {
+      console.log("🔥 FCM TOKEN:", token);
+      alert("Push notifications enabled!");
+    }).catch(err => {
+      console.error("FCM error:", err);
+    });
+  });
+}
+
     function showBrowserAlert(message) {
   const box = document.getElementById("alertBox");
   box.innerText = message;
@@ -187,6 +207,7 @@ new Chart(ctx, {
 
 </body>
 </html>
+
 
 
 
