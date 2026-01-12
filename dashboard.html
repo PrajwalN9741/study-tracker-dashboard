@@ -161,11 +161,33 @@ new Chart(ctx, {
     plugins: [centerTextPlugin]
 });
 </script>
+  <!-- Firebase core -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+
+<!-- Firebase messaging -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js"></script>
+
+<script>
+  // Firebase configuration (your values)
+  const firebaseConfig = {
+    apiKey: "AIzaSyCYuhNhB-i-NxjenRFjdzugYOsw2KeXSq0",
+    authDomain: "study-tracker1.firebaseapp.com",
+    projectId: "study-tracker1",
+    storageBucket: "study-tracker1.appspot.com",
+    messagingSenderId: "210271104714",
+    appId: "1:210271104714:web:14ec55de6895019822ce33"
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+</script>
+
 <script src="static/dashboard.js"></script>
 
 
 </body>
 </html>
+
 
 
 
