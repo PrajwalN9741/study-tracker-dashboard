@@ -29,11 +29,8 @@
     <button class="reset-btn">🔄 Reset 15-Day Plan</button>
 </form>
 <form action="/reset-day" method="post" onsubmit="return confirmDayReset();">
-    <select name="day" required>
-        {% for d in tasks %}
-            <option value="{{ d[0] }}">Day {{ d[0] }} – {{ d[1] }}</option>
-        {% endfor %}
-    </select>
+   <select id="daySelect" required></select>
+
     <button class="reset-day-btn">🔁 Reset Selected Day</button>
 </form>
 <form action="/undo-reset" method="post">
@@ -45,27 +42,12 @@
 <th>Day</th><th>Task</th><th>Status</th><th>Action</th>
 </tr>
 
-{% for d in tasks %}
-<tr>
-<td>Day {{ d[0] }}</td>
-<td>{{ d[1] }}</td>
-<td>
-<div class="bar {{ d[2]|lower }}"></div>
-{{ d[2] }}
-</td>
-<td>
-{% if d[2] != "Completed" %}
-<form method="post">
-<input type="hidden" name="day" value="{{ d[0] }}">
-<button>Done</button>
-</form>
-{% endif %}
-</td>
-</tr>
-{% endfor %}
+<tbody id="taskTable"></tbody>
+
 </table>
 
-<h3>Weekly Progress: {{ percent }}%</h3>
+<h3 id="weeklyProgress"></h3>
+
 <audio id="alertSound" src="static/alert.mp3"></audio>
 
 <script>
@@ -176,14 +158,12 @@ new Chart(ctx, {
     plugins: [centerTextPlugin]
 });
 </script>
-{% if missed_today %}
-<script>
-showBrowserAlert("You missed today's study task. Please complete it!");
-</script>
-{% endif %}
+<script src="static/dashboard.js"></script>
+
 
 </body>
 </html>
+
 
 
 
