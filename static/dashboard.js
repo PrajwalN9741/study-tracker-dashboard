@@ -131,12 +131,24 @@ function updateChart(done, missed) {
 }
 
 // -------- ALERT (Browser-only) --------
-function showBrowserAlert(msg) {
+function showBrowserAlert(message) {
+  // On-screen alert
   const box = document.getElementById("alertBox");
-  box.innerText = msg;
+  box.innerText = message;
   box.style.display = "block";
+
+  // 🔊 Sound
   document.getElementById("alertSound").play().catch(()=>{});
+
+  // 🔔 Browser notification
+  if ("Notification" in window && Notification.permission === "granted") {
+    new Notification("📘 TCS Study Alert", {
+      body: message,
+      icon: "static/icon-192.png"
+    });
+  }
 }
+
 
 const todayIdx = (new Date().getDate()-1) % state.length;
 if (state[todayIdx].status !== "Completed") {
