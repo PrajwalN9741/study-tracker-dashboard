@@ -154,9 +154,10 @@ function showBrowserAlert(message) {
 }
 
 
-const todayIdx = (new Date().getDate()-1) % state.length;
+const todayIdx = (new Date().getDate() - 1) % state.length;
+
 if (state[todayIdx].status !== "Completed") {
-  setTimeout(()=>showBrowserAlert("You missed today's study task!"), 800);
+  showBrowserAlert("You missed today's study task!");
 }
 
 // -------- INIT --------
