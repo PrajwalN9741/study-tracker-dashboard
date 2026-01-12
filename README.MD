@@ -1,6 +1,3 @@
-
-
-```md
 # 📘 Study Progress Tracker with Alerts
 
 
