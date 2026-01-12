@@ -27,6 +27,24 @@ function renderSelect() {
     daySelect.appendChild(opt);
   });
 }
+function enableNotifications() {
+  if (!("Notification" in window)) {
+    alert("This browser does not support notifications");
+    return;
+  }
+
+  Notification.requestPermission().then(permission => {
+    alert("Notification permission: " + permission);
+    console.log("Notification permission:", permission);
+
+    if (permission === "granted") {
+      new Notification("✅ Notifications Enabled", {
+        body: "You will now receive study alerts",
+        icon: "static/icon-192.png"
+      });
+    }
+  });
+}
 
 // -------- RENDER TABLE --------
 const table = document.getElementById("taskTable");
