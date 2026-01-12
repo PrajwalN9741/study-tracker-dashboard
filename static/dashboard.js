@@ -132,13 +132,9 @@ function updateChart(done, missed) {
 
 // -------- ALERT (Browser-only) --------
 function showBrowserAlert(message) {
-  // On-screen alert
   const box = document.getElementById("alertBox");
   box.innerText = message;
   box.style.display = "block";
-
-  // 🔊 Sound
-  document.getElementById("alertSound").play().catch(()=>{});
 
   // 🔔 Browser notification
   if ("Notification" in window && Notification.permission === "granted") {
@@ -146,6 +142,14 @@ function showBrowserAlert(message) {
       body: message,
       icon: "static/icon-192.png"
     });
+  }
+
+  // 🔊 Play sound ONLY once per day
+  const todayKey = "alertPlayed-" + new Date().toDateString();
+
+  if (!localStorage.getItem(todayKey)) {
+    document.getElementById("alertSound").play().catch(()=>{});
+    localStorage.setItem(todayKey, "yes");
   }
 }
 
