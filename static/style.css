@@ -5,14 +5,18 @@ body {
 }
 
 table {
-    width: 100%;
-    border-collapse: collapse;
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+  background: #fff;
 }
 
-td, th {
-    padding: 8px;
-    border-bottom: 1px solid #ccc;
+th, td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: center;
 }
+
 
 .bar {
     height: 8px;
@@ -30,9 +34,15 @@ button {
     padding: 5px 10px;
 }
 .chart-container {
-    width: 380px;
-    height: 380px;
-    margin: 20px auto;
+  width: 100%;
+  max-width: 500px;
+  height: 300px;          /* 🔥 REQUIRED */
+  margin: 20px auto;
+}
+
+#chart {
+  width: 100% !important;
+  height: 100% !important;
 }
 
 @media (max-width: 768px) {
