@@ -43,6 +43,29 @@
 </div>
 
 <div id="alertBox" class="browser-alert" style="display:none;"></div>
+<div style="text-align:center;margin:12px 0;">
+  <button class="reset-today-btn" onclick="resetToday()">🔁 Reset Today</button>
+  <button class="reset-btn" onclick="resetAll()">🔄 Reset 15-Day Plan</button>
+
+  <select id="daySelect"></select>
+  <button class="reset-day-btn" onclick="resetSelected()">🔁 Reset Selected Day</button>
+
+  <button class="undo-btn" onclick="undoReset()">↩ Undo Last Reset</button>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Day</th>
+      <th>Task</th>
+      <th>Status</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody id="taskTable"></tbody>
+</table>
+
+<h3 id="weeklyProgress"></h3>
 
 <audio id="alertSound" src="static/alert.mp3"></audio>
 
@@ -81,3 +104,4 @@
 
 </body>
 </html>
+
