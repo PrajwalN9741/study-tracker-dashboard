@@ -52,25 +52,35 @@
 
 <audio id="alertSound" src="static/alert.mp3"></audio>
 <script>
+  const messaging = firebase.messaging();
+
   function enablePush() {
-  Notification.requestPermission().then(permission => {
-    if (permission !== "granted") {
-      alert("Notification permission denied");
-      return;
-    }
+    Notification.requestPermission().then(permission => {
+      if (permission !== "granted") {
+        alert("Notification permission denied");
+        return;
+      }
 
-    const messaging = firebase.messaging();
+      messaging.getToken({
+        vapidKey: "BParGCjnABsB3lo5eqhOhm2vZqvFsFs8D8RCY-Mu3QSeAXEoWzhiROUa_ukBOv2oBfjrZBnw3tDcpj38dRijCNw"
+      })
+      .then(token => {
+        console.log("🔥 FCM TOKEN:", token);
+        alert("Push notifications enabled!");
+      })
+      .catch(err => {
+        console.error("FCM error:", err);
+      });
+    });
+  }
 
-    messaging.getToken({
-      vapidKey: "BParGCjnABsB3lo5eqhOhm2vZqvFsFs8D8RCY-Mu3QSeAXEoWzhiROUa_ukBOv2oBfjrZBnw3tDcpj38dRijCNw"
-    }).then(token => {
-      console.log("🔥 FCM TOKEN:", token);
-      alert("Push notifications enabled!");
-    }).catch(err => {
-      console.error("FCM error:", err);
+  // Foreground messages
+  messaging.onMessage(payload => {
+    new Notification(payload.notification.title, {
+      body: payload.notification.body,
+      icon: "static/icon-192.png"
     });
   });
-}
 
     function showBrowserAlert(message) {
   const box = document.getElementById("alertBox");
@@ -207,6 +217,7 @@ new Chart(ctx, {
 
 </body>
 </html>
+
 
 
 
