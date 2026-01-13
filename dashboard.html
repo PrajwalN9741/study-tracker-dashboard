@@ -10,6 +10,21 @@
 <meta name="theme-color" content="#0b1f5e">
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Firebase (MUST be before JS usage) -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyCYuhNhB-i-NxjenRFjdzugYOsw2KeXSq0",
+    authDomain: "study-tracker1.firebaseapp.com",
+    projectId: "study-tracker1",
+    messagingSenderId: "210271104714",
+    appId: "1:210271104714:web:14ec55de6895019822ce33"
+  };
+  firebase.initializeApp(firebaseConfig);
+</script>
 </head>
 
 <body>
@@ -17,10 +32,10 @@
 <h2>📊 TCS 15-Day Study Tracker</h2>
 
 <div class="info-banner">
-  🔔 <strong>Browser alerts only</strong> — no email notifications are used.
-    <button onclick="enablePush()" class="reset-btn">
-  🔔 Enable Push Notifications
-</button>
+  🔔 <strong>Push notifications supported</strong>
+  <button onclick="enablePush()" class="reset-btn">
+    🔔 Enable Push Notifications
+  </button>
 </div>
 
 <div class="chart-container">
@@ -29,28 +44,9 @@
 
 <div id="alertBox" class="browser-alert" style="display:none;"></div>
 
-<div style="text-align:center;margin-bottom:12px;">
-  <button class="reset-today-btn" onclick="resetToday()">🔁 Reset Today</button>
-  <button class="reset-btn" onclick="resetAll()">🔄 Reset 15-Day Plan</button>
-
-  <select id="daySelect"></select>
-  <button class="reset-day-btn" onclick="resetSelected()">🔁 Reset Selected Day</button>
-
-  <button class="undo-btn" onclick="undoReset()">↩ Undo Last Reset</button>
-</div>
-
-<table>
-  <thead>
-    <tr>
-      <th>Day</th><th>Task</th><th>Status</th><th>Action</th>
-    </tr>
-  </thead>
-  <tbody id="taskTable"></tbody>
-</table>
-
-<h3 id="weeklyProgress"></h3>
-
 <audio id="alertSound" src="static/alert.mp3"></audio>
+
+<!-- Push Notification Logic -->
 <script>
   const messaging = firebase.messaging();
 
@@ -62,169 +58,26 @@
       }
 
       messaging.getToken({
-        vapidKey: "BParGCjnABsB3lo5eqhOhm2vZqvFsFs8D8RCY-Mu3QSeAXEoWzhiROUa_ukBOv2oBfjrZBnw3tDcpj38dRijCNw"
-      })
-      .then(token => {
+        vapidKey: "BParGCjnABsB3lo5eqhOhm2vZqvFsF8D8RCY-Mu3QSeAXEoWzhiR0Ua_ukBOv20BfjrZBnw3tDcpj38dRjCNw"
+      }).then(token => {
         console.log("🔥 FCM TOKEN:", token);
         alert("Push notifications enabled!");
-      })
-      .catch(err => {
+      }).catch(err => {
         console.error("FCM error:", err);
       });
     });
   }
 
-  // Foreground messages
   messaging.onMessage(payload => {
     new Notification(payload.notification.title, {
       body: payload.notification.body,
       icon: "static/icon-192.png"
     });
   });
-
-    function showBrowserAlert(message) {
-  const box = document.getElementById("alertBox");
-  box.innerText = message;
-  box.style.display = "block";
-
-  // 🔔 Browser notification
-  if ("Notification" in window && Notification.permission === "granted") {
-    new Notification("📘 TCS Study Alert", {
-      body: message,
-      icon: "static/icon-192.png"
-    });
-  }
-
-  // 🔊 Play sound ONLY once per day
-  const todayKey = "alertPlayed-" + new Date().toDateString();
-
-  if (!localStorage.getItem(todayKey)) {
-    document.getElementById("alertSound").play().catch(()=>{});
-    localStorage.setItem(todayKey, "yes");
-  }
-}
-
-        } else if (Notification.permission !== "denied") {
-            Notification.requestPermission();
-        }
-    }
-}
-if ("serviceWorker" in navigator && "Notification" in window) {
-    navigator.serviceWorker.register("static/sw.js").then(() => {
-        Notification.requestPermission();
-    });
-}
-    function confirmTodayReset() {
-    return confirm(
-        "Reset ONLY today’s task?\n\nOther days will not be affected."
-    );
-}
-    function confirmReset() {
-    return confirm(
-        "⚠️ Are you sure?\n\nThis will reset ALL progress for the 15-day plan."
-    );
-}
-function confirmDayReset() {
-    return confirm(
-        "Are you sure you want to reset the selected day only?"
-    );
-}
-const completed = {{ completed }};
-const missed = {{ missed }};
-const total = completed + missed;
-const percent = total ? Math.round((completed / total) * 100) : 0;
-
-// Custom plugin for center text
-const centerTextPlugin = {
-    id: 'centerText',
-    beforeDraw(chart) {
-        const { width } = chart;
-        const { height } = chart;
-        const ctx = chart.ctx;
-        ctx.restore();
-
-        const fontSize = (height / 120).toFixed(2);
-        ctx.font = `bold ${fontSize}em Arial`;
-        ctx.textBaseline = "middle";
-        ctx.fillStyle = "#0b1f5e";
-
-        const text = percent + "%";
-        const textX = Math.round((width - ctx.measureText(text).width) / 2);
-        const textY = height / 2 - 10;
-
-        ctx.fillText(text, textX, textY);
-
-        ctx.font = "14px Arial";
-        ctx.fillStyle = "#555";
-        ctx.fillText(
-            "Completed",
-            width / 2 - 35,
-            height / 2 + 15
-        );
-
-        ctx.save();
-    }
-};
-
-const ctx = document.getElementById("chart");
-
-new Chart(ctx, {
-    type: "doughnut",
-    data: {
-        labels: ["Completed", "Missed"],
-        datasets: [{
-            data: [completed, missed],
-            backgroundColor: ["#36a2eb", "#ff6384"],
-            borderWidth: 2
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        cutout: "70%",
-        plugins: {
-            legend: {
-                position: "top"
-            }
-        }
-    },
-    plugins: [centerTextPlugin]
-});
-</script>
-  <!-- Firebase core -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-
-<!-- Firebase messaging -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js"></script>
-
-<script>
-  // Firebase configuration (your values)
-  const firebaseConfig = {
-    apiKey: "AIzaSyCYuhNhB-i-NxjenRFjdzugYOsw2KeXSq0",
-    authDomain: "study-tracker1.firebaseapp.com",
-    projectId: "study-tracker1",
-    storageBucket: "study-tracker1.appspot.com",
-    messagingSenderId: "210271104714",
-    appId: "1:210271104714:web:14ec55de6895019822ce33"
-  };
-
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
 </script>
 
+<!-- Your static dashboard logic -->
 <script src="static/dashboard.js"></script>
-
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
