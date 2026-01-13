@@ -73,30 +73,50 @@
 <script>
   const messaging = firebase.messaging();
 
-  function enablePush() {
-    Notification.requestPermission().then(permission => {
-      if (permission !== "granted") {
-        alert("Notification permission denied");
-        return;
-      }
-
-      messaging.getToken({
-        vapidKey: "BParGCjnABsB3lo5eqhOhm2vZqvFsF8D8RCY-Mu3QSeAXEoWzhiR0Ua_ukBOv20BfjrZBnw3tDcpj38dRjCNw"
-      }).then(token => {
-        console.log("🔥 FCM TOKEN:", token);
-        alert("Push notifications enabled!");
-      }).catch(err => {
-        console.error("FCM error:", err);
-      });
-    });
+function enablePush() {
+  if (!("serviceWorker" in navigator)) {
+    alert("Service Worker not supported");
+    return;
   }
 
-  messaging.onMessage(payload => {
-    new Notification(payload.notification.title, {
-      body: payload.notification.body,
-      icon: "static/icon-192.png"
+  Notification.requestPermission().then(permission => {
+    if (permission !== "granted") {
+      alert("Notification permission denied");
+      return;
+    }
+
+    // ✅ MANUAL service worker registration (REQUIRED for GitHub Pages)
+    navigator.serviceWorker.register(
+      "firebase-messaging-sw.js",
+      { scope: "/study-tracker-dashboard/" }
+    )
+    .then(registration => {
+      console.log("✅ Service Worker registered");
+
+      // ✅ PASS registration explicitly
+      return messaging.getToken({
+        vapidKey: "BParGCjnABsB3lo5eqhOhm2vZqvFsF8D8RCY-Mu3QSeAXEoWzhiR0Ua_ukBOv20BfjrZBnw3tDcpj38dRjCNw",
+        serviceWorkerRegistration: registration
+      });
+    })
+    .then(token => {
+      console.log("🔥 FCM TOKEN:", token);
+      alert("Push notifications enabled!");
+    })
+    .catch(err => {
+      console.error("❌ FCM error:", err);
     });
   });
+}
+
+// Foreground notification
+messaging.onMessage(payload => {
+  new Notification(payload.notification.title, {
+    body: payload.notification.body,
+    icon: "static/icon-192.png"
+  });
+});
+
 </script>
 
 <!-- Your static dashboard logic -->
@@ -104,4 +124,5 @@
 
 </body>
 </html>
+
 
