@@ -1,3 +1,5 @@
+document.addEventListener("DOMContentLoaded", () => {
+
 // -------- DATA (acts like Jinja variables) --------
 const tasks = [
   "Number System","HCF & LCM","Percentages","Profit & Loss",
@@ -16,9 +18,13 @@ function save() {
   localStorage.setItem("tracker", JSON.stringify(state));
 }
 
-// -------- RENDER SELECT --------
+// -------- ELEMENTS --------
 const daySelect = document.getElementById("daySelect");
+const table = document.getElementById("taskTable");
+
+// -------- RENDER SELECT --------
 function renderSelect() {
+  if (!daySelect) return;
   daySelect.innerHTML = "";
   state.forEach((t, i) => {
     const opt = document.createElement("option");
@@ -27,29 +33,10 @@ function renderSelect() {
     daySelect.appendChild(opt);
   });
 }
-function enableNotifications() {
-  if (!("Notification" in window)) {
-    alert("This browser does not support notifications");
-    return;
-  }
-
-  Notification.requestPermission().then(permission => {
-    alert("Notification permission: " + permission);
-    console.log("Notification permission:", permission);
-
-    if (permission === "granted") {
-      new Notification("✅ Notifications Enabled", {
-        body: "You will now receive study alerts",
-        icon: "static/icon-192.png"
-      });
-    }
-  });
-}
 
 // -------- RENDER TABLE --------
-const table = document.getElementById("taskTable");
-
 function renderTable() {
+  if (!table) return;
   table.innerHTML = "";
   let completed = 0;
 
@@ -73,40 +60,40 @@ function renderTable() {
   updateChart(completed, state.length - completed);
 }
 
-function markDone(i) {
+window.markDone = function(i) {
   state[i].status = "Completed";
   save();
   renderTable();
-}
+};
 
 // -------- RESET / UNDO --------
-function resetToday() {
+window.resetToday = function() {
   undoState = JSON.stringify(state);
   const today = (new Date().getDate()-1) % state.length;
   state[today].status = "Not Started";
   save(); renderTable();
-}
+};
 
-function resetSelected() {
+window.resetSelected = function() {
   undoState = JSON.stringify(state);
   const i = +daySelect.value;
   state[i].status = "Not Started";
   save(); renderTable();
-}
+};
 
-function resetAll() {
+window.resetAll = function() {
   undoState = JSON.stringify(state);
   state.forEach(t => t.status="Not Started");
   save(); renderTable();
-}
+};
 
-function undoReset() {
+window.undoReset = function() {
   if (!undoState) return;
   state = JSON.parse(undoState);
   save(); renderTable();
-}
+};
 
-// -------- CHART + PROGRESS --------
+// -------- CHART --------
 let chart;
 function updateChart(done, missed) {
   const percent = Math.round((done/(done+missed))*100);
@@ -133,10 +120,11 @@ function updateChart(done, missed) {
 // -------- ALERT (Browser-only) --------
 function showBrowserAlert(message) {
   const box = document.getElementById("alertBox");
+  if (!box) return;
+
   box.innerText = message;
   box.style.display = "block";
 
-  // 🔔 Browser notification
   if ("Notification" in window && Notification.permission === "granted") {
     new Notification("📘 TCS Study Alert", {
       body: message,
@@ -144,18 +132,15 @@ function showBrowserAlert(message) {
     });
   }
 
-  // 🔊 Play sound ONLY once per day
   const todayKey = "alertPlayed-" + new Date().toDateString();
-
   if (!localStorage.getItem(todayKey)) {
     document.getElementById("alertSound").play().catch(()=>{});
     localStorage.setItem(todayKey, "yes");
   }
 }
 
-
+// -------- DAILY CHECK --------
 const todayIdx = (new Date().getDate() - 1) % state.length;
-
 if (state[todayIdx].status !== "Completed") {
   showBrowserAlert("You missed today's study task!");
 }
@@ -163,3 +148,5 @@ if (state[todayIdx].status !== "Completed") {
 // -------- INIT --------
 renderSelect();
 renderTable();
+
+});
